@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:negotiation/echarts.dart';
+import 'package:negotiation/recognize/recognize.dart';
 import 'package:negotiation/screens/chats/chats_screen.dart';
 
 class HomePage extends StatelessWidget {
@@ -37,89 +38,43 @@ class HomePage extends StatelessWidget {
             const Spacer(
               flex: 3,
             ),
-            FittedBox(
-              child: TextButton(
-                onPressed: () =>
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChatsScreen(),
-                      ),
-                    ),
-                child: Row(
-                  children: [
-                    Text(
-                      'Skip',
-                      textAlign: TextAlign.center,
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .bodyText1
-                          ?.copyWith(
-                          color: Theme
-                              .of(context)
-                              .textTheme
-                              .bodyText1
-                              ?.color),
-                    ),
-                    const SizedBox(
-                      width: 5.0,
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      size: 16,
-                      color: Theme
-                          .of(context)
-                          .textTheme
-                          .bodyText1
-                          ?.color
-                          ?.withOpacity(0.8),
-                    ),
-                  ],
-                ),
-              ),
+            skipButton(context, 'Cars', const ChatsScreen()),
+            skipButton(context, 'eCharts', const MyHomePage()),
+            skipButton(context, 'Recognize', const RecognizePage()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  FittedBox skipButton(BuildContext context, String skipName, Widget page) {
+    return FittedBox(
+      child: TextButton(
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => page,
+          ),
+        ),
+        child: Row(
+          children: [
+            Text(
+              skipName,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                  color: Theme.of(context).textTheme.bodyText1?.color),
             ),
-            FittedBox(
-              child: TextButton(
-                onPressed: () =>
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MyHomePage(),
-                      ),
-                    ),
-                child: Row(
-                  children: [
-                    Text(
-                      'Skip2',
-                      textAlign: TextAlign.center,
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .bodyText1
-                          ?.copyWith(
-                          color: Theme
-                              .of(context)
-                              .textTheme
-                              .bodyText1
-                              ?.color),
-                    ),
-                    const SizedBox(
-                      width: 5.0,
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      size: 16,
-                      color: Theme
-                          .of(context)
-                          .textTheme
-                          .bodyText1
-                          ?.color
-                          ?.withOpacity(0.8),
-                    ),
-                  ],
-                ),
-              ),
+            const SizedBox(
+              width: 5.0,
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: Theme.of(context)
+                  .textTheme
+                  .bodyText1
+                  ?.color
+                  ?.withOpacity(0.8),
             ),
           ],
         ),

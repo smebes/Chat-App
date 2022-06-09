@@ -7,7 +7,7 @@ import 'package:negotiation/components/gradient_text.dart';
 // import 'package:number_display/number_display.dart';
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
