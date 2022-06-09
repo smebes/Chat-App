@@ -69,7 +69,7 @@ List chatsData = [
     isActive: false,
   ),
     Chat(
-    name: "Mini 2021",
+    name: "Mini 2020",
     lastMessage: "MINI Cooper S 3-Door Hatch",
     image: "assets/images/mini.png",
     time: "3m ago",
