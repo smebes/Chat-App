@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:negotiation/recognize/credit/utils.dart';
 
 class RecognizePage extends StatefulWidget {
   const RecognizePage({Key? key}) : super(key: key);
@@ -15,7 +16,10 @@ class _RecognizePageState extends State<RecognizePage> {
   final ImagePicker _picker = ImagePicker();
   bool textScanning = false;
   XFile? imageFile;
-  String scannedText = "";
+  String scannedText = "null";
+
+  // Farklı String değerler var. Hepsini diziye atayıp en alttakini alıyorum.
+  List<dynamic> holderName = [];
 
   @override
   Widget build(BuildContext context) {
@@ -128,9 +132,10 @@ class _RecognizePageState extends State<RecognizePage> {
   }
 
   void getImage(ImageSource source) async {
+    holderName = [];
+    scannedText = '';
     final pickedImage = await _picker.pickImage(source: source);
     print('Resim----${pickedImage!.path}');
-    // imageFile = pickedImage;
 
     try {
       if (pickedImage != null) {
@@ -154,12 +159,78 @@ class _RecognizePageState extends State<RecognizePage> {
     RecognizedText recognisedText = await textDetector.processImage(inputImage);
     await textDetector.close();
     scannedText = "";
+
+    // Burada satır satır okutuorum. Sonra da ilgili satırlarda işlem yaparak bana lazım olan bilgileri çekiyorum
     for (TextBlock block in recognisedText.blocks) {
       for (TextLine line in block.lines) {
-        scannedText = scannedText + line.text + "\n";
+        String _cardIssuer = CardUtils().getCardIssuer(line.text).toString();
+
+        // Expiry Date'i / işaretinin sağındaki ve solundaki 2 rakamı alarak yaptım
+        if (line.text.contains('/')) {
+          var str = line.text;
+          var parts = str.split('/');
+          var prefix = parts[0].trim();
+          var suffix = parts.last.trim().substring(0, 2);
+          var preDate = prefix.substring(prefix.length - 2);
+          var dateT = preDate + '/' + suffix;
+          var dateS = dateT.replaceAll('l', '1');
+          if (suffix.contains(RegExp(r'[0-9]')) &&
+              preDate.contains(RegExp(r'[0-9]'))) {
+            scannedText = scannedText + "\n" + 'Expiry Date: ' + dateS + "\n";
+          }
+        }
+        // Burada da holderName'i biz dizi şeklinde belirliyorum
+        // Bir çok string değer var. Ben onların en altındakini alıyorum
+        if (line.text.contains(RegExp(r'[A-Z]'))) {
+          if (!line.text.contains(RegExp(r'[0-9]'))) {
+            if (line.text.toLowerCase().contains('master') ||
+                line.text.toLowerCase().contains('valio') ||
+                line.text.toLowerCase().contains('card') ||
+                line.text.toLowerCase().contains('visa') ||
+                line.text.toLowerCase().contains('gold') ||
+                line.text.toLowerCase().contains('paywave') ||
+                line.text.toLowerCase().contains('classic')) {
+              print('Wrong Name: ----- ${line.text}');
+            } else {
+              holderName.add(line.text.toString());
+            }
+          }
+        }
+
+        // Card bilgileri için mevcut olan CardUtils() sınıfından getCardIssuer() metodunu kullandım.
+        if (line.text.contains(RegExp(r'[0-9]')) && line.text.length >= 10) {
+          if (!line.text.contains('/')) {
+            if (_cardIssuer == 'CardIssuer.visa' ||
+                _cardIssuer == 'CardIssuer.mastercard' ||
+                _cardIssuer == 'CardIssuer.dinersClub' ||
+                _cardIssuer == 'CardIssuer.amex' ||
+                _cardIssuer == 'CardIssuer.jcb' ||
+                _cardIssuer == 'CardIssuer.discover' ||
+                _cardIssuer == 'CardIssuer.bCGlobal' ||
+                _cardIssuer == 'CardIssuer.carteBlanche' ||
+                _cardIssuer == 'CardIssuer.instaPayment' ||
+                _cardIssuer == 'CardIssuer.maestro' ||
+                _cardIssuer == 'CardIssuer.solo' ||
+                _cardIssuer == 'CardIssuer.unionPay' ||
+                _cardIssuer == 'CardIssuer.koreanLocal') {
+              scanText(line, 'Card Number: ');
+            }
+          } else {
+            print('Sayı yazılamadı-----  ${line.text}');
+          }
+        }
       }
     }
     textScanning = false;
-    setState(() {});
+    setState(() {
+      if (holderName.isNotEmpty) {
+        String st = holderName.last.toString();
+        scannedText = scannedText + "\n" + 'Holder Name: ' + st + "\n";
+      }
+    });
+  }
+
+  String scanText(TextLine line, String st) {
+    return scannedText = scannedText + "\n" + st + line.text.toString() + "\n";
   }
 }

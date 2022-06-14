@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:negotiation/echarts.dart';
+import 'package:negotiation/recognize/AwesomeCard.dart';
+import 'package:negotiation/recognize/CardScann.dart';
+import 'package:negotiation/recognize/cardscan.dart';
+import 'package:negotiation/recognize/credit/ScanCard.dart';
 import 'package:negotiation/recognize/recognize.dart';
 import 'package:negotiation/screens/chats/chats_screen.dart';
 
@@ -41,6 +45,10 @@ class HomePage extends StatelessWidget {
             skipButton(context, 'Cars', const ChatsScreen()),
             skipButton(context, 'eCharts', const MyHomePage()),
             skipButton(context, 'Recognize', const RecognizePage()),
+            skipButton(context, 'Card Scan', CardScan()),
+            skipButton(context, 'awesome_card', AwesomeCard()),
+            skipButton(context, 'Card Scan - 2', CardScann()),
+            skipButton(context, 'ScanCard', const ScanCard()),
           ],
         ),
       ),

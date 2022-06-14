@@ -9,6 +9,9 @@ environment:
   sdk: ">=2.16.2 <3.0.0"
 
 dependencies:
+  awesome_card: ^1.1.7
+  # card_scanner: ^0.2.2
+  credit_card_scanner: ^1.0.4
   cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
@@ -29,3 +32,11 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+
+  plugin:
+    platforms:
+      android:
+        package: com.nateshmbhat.card_scanner
+        pluginClass: CardScannerPlugin
+      ios:
+        pluginClass: CardScannerPlugin
